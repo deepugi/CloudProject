@@ -1,11 +1,11 @@
-
-
 const express = require('express');
 const bodyParser = require('body-parser');
 const { LocalStorage } = require('node-localstorage');
 const path = require('path');
 const app = express();
-const port = 80;
+const port = 8080;
+const appBasePath = process.cwd();
+const appPublicFir = path.join(appBasePath, '/public');
 
 app.use(bodyParser.urlencoded({ extended: true }));
 
@@ -13,8 +13,7 @@ app.use(bodyParser.urlencoded({ extended: true }));
 const localStorage = new LocalStorage('./localStorage');
 
 // Serve static files from the 'public' directory
-app.use(express.static(path.join(__dirname, 'public')));
-
+app.use(express.static(appPublicFir));
 
 // Redirect to login page on root access
 app.get('/', (req, res) => {
@@ -24,7 +23,7 @@ app.get('/', (req, res) => {
 
 app.get('/login', (req, res) => {
     console.log('hello inside root');
-    res.sendFile(__dirname + '/public/login.html');
+    res.sendFile(`${appPublicFir}/login.html`);
 });
 
 app.post('/login', (req, res) => {
@@ -44,7 +43,7 @@ app.post('/login', (req, res) => {
 
 app.get('/register', (req, res) => {
     console.log('hello inside root');
-    res.sendFile(__dirname + '/public/register.html');
+    res.sendFile(`${appPublicFir}/register.html`);
 });
 
 app.post('/register', (req, res) => {
