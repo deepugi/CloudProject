@@ -7,6 +7,9 @@ const port = 80;
 const appBasePath = process.cwd();
 const appPublicFir = path.join(appBasePath, '/public');
 
+console.log('appBasePath:', appBasePath);
+console.log('__dirname:', __dirname);
+
 app.use(bodyParser.urlencoded({ extended: true }));
 
 // Initialize local storage in the 'localStorage' folder
