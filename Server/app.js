@@ -17,27 +17,30 @@ app.use(express.static(appPublicFir));
 
 // Redirect to login page on root access
 app.get('/', (req, res) => {
-    console.log('hello inside root');
     res.redirect('/login');
 });
 
 app.get('/login', (req, res) => {
-    console.log('hello inside root');
     res.sendFile(`${appPublicFir}/login.html`);
 });
 
-app.post('/login', (req, res) => {
+app.post('/login', async (req, res) => {
     const { username, password } = req.body;
 
-    // Check if the entered username and password match the stored user
-    const storedUser = JSON.parse(localStorage.getItem(username));
-    if (storedUser && storedUser.password === password) {
-        res.redirect('/userDetails?username=' + username);
-    } else {
-        res.send(`
-            <h2>Invalid credentials. Please try again.</h2>
-            <p>Not a user? <a href="/register">Register here</a></p>
-        `);
+    try {
+        const storedUser = JSON.parse(await localStorage.getItem(username));
+
+        if (storedUser && storedUser.password === password) {
+            res.redirect('/userDetails?username=' + username);
+        } else {
+            res.send(`
+                <h2>Invalid credentials. Please try again.</h2>
+                <p>Not a user? <a href="/register">Register here</a></p>
+            `);
+        }
+    } catch (error) {
+        console.error(error);
+        res.status(500).send('Something went wrong!');
     }
 });
 
@@ -46,19 +49,23 @@ app.get('/register', (req, res) => {
     res.sendFile(`${appPublicFir}/register.html`);
 });
 
-app.post('/register', (req, res) => {
-    console.log('hello inside root');
+app.post('/register', async (req, res) => {
     const { firstName, lastName, email, username, password } = req.body;
 
-    // Store user details in local storage
-    const userDetails = { firstName, lastName, email, username, password };
-    localStorage.setItem(username, JSON.stringify(userDetails));
+    try {
+        const userDetails = { firstName, lastName, email, username, password };
+        await localStorage.setItem(username, JSON.stringify(userDetails));
 
-    res.redirect('/login');
+        res.redirect('/login');
+    } catch (error) {
+        console.error(error);
+        res.status(500).send('Something went wrong!');
+    }
 });
 
 app.get('/userDetails', (req, res) => {
     const storedUser = JSON.parse(localStorage.getItem(req.query.username));
+
     if (storedUser) {
         res.send(`
             <h2>User Details:</h2>
@@ -72,8 +79,7 @@ app.get('/userDetails', (req, res) => {
     }
 });
 
-
-
+// Error handling middleware
 app.use((err, req, res, next) => {
     console.error(err.stack);
     res.status(500).send('Something went wrong!');
