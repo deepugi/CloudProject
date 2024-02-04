@@ -3,7 +3,7 @@ const bodyParser = require('body-parser');
 const { LocalStorage } = require('node-localstorage');
 const path = require('path');
 const app = express();
-const port = 8080;
+const port = 80;
 const appBasePath = process.cwd();
 const appPublicFir = path.join(appBasePath, '/public');
 
