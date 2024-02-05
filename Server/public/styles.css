@@ -31,7 +31,7 @@ input {
 }
 
 button {
-    background-color: #4caf50;
+    background-color: red;
     color: #fff;
     padding: 10px;
     border: none;
@@ -40,7 +40,7 @@ button {
 }
 
 button:hover {
-    background-color: #45a049;
+    background-color: red;
 }
 
 .error {
